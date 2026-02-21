@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dijkstra Route Finder 🇲🇷</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Route Finder in Mauritania</h1>
+        <p>Select your starting and destination cities to find the shortest route.</p>
+
+        <div id="error"></div>
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Finding routes...</p>
+        </div>
+
+        <form id="routeForm">
+            <label for="start_city">Starting City:</label>
+            <select name="start_city" id="start_city" required>
+                <option value="" disabled selected>-- Select starting city --</option>
+                {% for city in cities %}
+                    <option value="{{ city }}">{{ city }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="end_city">Destination City:</label>
+            <select name="end_city" id="end_city" required>
+                <option value="" disabled selected>-- Select destination city --</option>
+                {% for city in cities %}
+                    <option value="{{ city }}">{{ city }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Find Shortest Route</button>
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <script src="{{ url_for('static', path='js/script.js') }}"></script>
+</body>
+</html>
