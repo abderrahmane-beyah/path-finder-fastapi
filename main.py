@@ -1,8 +1,7 @@
+import os
+
 from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
-from starlette.requests import Request
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pathfinding import k_shortest_paths
 from graph import cities_graph
@@ -11,12 +10,30 @@ import uvicorn
 
 app = FastAPI()
 
-# Mount static files and setup templates
-app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # List of cities for dropdown menus
 CITY_NAMES = sorted(list(cities_graph.keys()))
+
+# Mount legacy static/template files only if they exist
+if os.path.isdir("static") and os.path.isdir("templates"):
+    from fastapi.staticfiles import StaticFiles
+    from fastapi.templating import Jinja2Templates
+    from fastapi.responses import HTMLResponse
+    from starlette.requests import Request
+
+    app.mount("/static", StaticFiles(directory="static"), name="static")
+    _templates = Jinja2Templates(directory="templates")
+
+    @app.get("/", response_class=HTMLResponse)
+    async def get_index(request: Request):
+        """Serve the legacy Jinja2 page"""
+        return _templates.TemplateResponse("index.html", {"request": request, "cities": CITY_NAMES})
 
 
 class RouteRequest(BaseModel):
@@ -43,10 +60,10 @@ class RouteResponse(BaseModel):
     cities: list = []
 
 
-@app.get("/", response_class=HTMLResponse)
-async def get_index(request: Request):
-    """Serve the main page"""
-    return templates.TemplateResponse("index.html", {"request": request, "cities": CITY_NAMES})
+@app.get("/api/cities")
+async def get_cities():
+    """Return the list of available cities"""
+    return {"cities": CITY_NAMES}
 
 
 @app.post("/api/routes")

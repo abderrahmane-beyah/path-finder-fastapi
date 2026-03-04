@@ -1,12 +1,13 @@
-# Path Finder API (FastAPI)
+# Path Finder
 
 ## Overview
 
-Path Finder is a web application built with **FastAPI** that computes the **k shortest simple routes between cities** using graph algorithms. It uses:
+Path Finder is a web application that computes the **k shortest simple routes between cities** using graph algorithms. It uses:
 
-* **Dijkstra’s algorithm** to compute the shortest path
-* **Yen’s algorithm** to compute multiple alternative shortest paths
-* **Jinja2 templates** for the frontend interface
+* **Dijkstra's algorithm** to compute the shortest path
+* **Yen's algorithm** to compute multiple alternative shortest paths
+* **FastAPI** backend with REST API
+* **React + TypeScript** frontend (Vite)
 
 The application allows users to select a start city and a destination city and visualize the available routes.
 
@@ -14,10 +15,11 @@ The application allows users to select a start city and a destination city and v
 
 ## Features
 
-* FastAPI backend
-* Implementation of Yen’s algorithm (manual, without external graph libraries)
+* FastAPI backend with JSON API
+* React + TypeScript frontend
+* Implementation of Yen's algorithm (manual, without external graph libraries)
 * Multiple route computation between cities
-* Simple web interface
+* Route visualization with graph images
 * Automatic API documentation at `/docs`
 * Easily configurable graph structure
 
@@ -29,11 +31,19 @@ The application allows users to select a start city and a destination city and v
 path-finder/
 │
 ├── main.py              # FastAPI application
-├── pathfinding.py      # Dijkstra and Yen algorithms
-├── graph.py            # Graph definition (cities and distances)
+├── pathfinding.py       # Dijkstra and Yen algorithms
+├── graph.py             # Graph definition (cities and distances)
+├── visualizer.py        # Route visualization
 │
-├── templates/          # HTML templates
-├── static/             # CSS / JS files
+├── frontend/            # React + TypeScript frontend (Vite)
+│   ├── src/
+│   │   ├── App.tsx      # Main React component
+│   │   ├── App.css      # Application styles
+│   │   ├── index.css    # Global styles
+│   │   └── main.tsx     # Entry point
+│   ├── index.html
+│   ├── vite.config.ts
+│   └── package.json
 │
 ├── requirements.txt
 ├── README.md
@@ -45,45 +55,71 @@ path-finder/
 
 Clone the repository:
 
-```
+```bash
 git clone https://github.com/abderrahmane-beyah/path-finder-fastapi
 cd path-finder-fastapi
 ```
 
-Create a virtual environment:
+### Backend
 
-```
+Create a virtual environment and install dependencies:
+
+```bash
 python3 -m venv venv
 source venv/bin/activate
-```
-
-Install dependencies:
-
-```
 pip install -r requirements.txt
+```
+
+### Frontend
+
+Install Node.js dependencies:
+
+```bash
+cd frontend
+npm install
 ```
 
 ---
 
-## Run the application
+## Run the Application
 
-Start the FastAPI server:
+Start the backend (port 8000):
 
+```bash
+python main.py
 ```
-uvicorn main:app --reload
+
+Start the frontend dev server (port 5173):
+
+```bash
+cd frontend
+npm run dev
 ```
 
 Open in your browser:
 
 ```
-http://127.0.0.1:8000
+http://localhost:5173
 ```
 
 API documentation:
 
 ```
-http://127.0.0.1:8000/docs
+http://localhost:8000/docs
 ```
+
+---
+
+## Production Build
+
+Build the frontend for production:
+
+```bash
+cd frontend
+npm run build
+```
+
+The output will be in `frontend/dist/`.
 
 ---
 
@@ -97,7 +133,7 @@ graph.py
 
 Example:
 
-```
+```python
 graph = {
     "Nouakchott": {
         "Atar": 400,
@@ -115,7 +151,7 @@ You can easily:
 * Remove cities
 * Change distances
 * Replace the entire graph with your own data
-* change the positions with the new cities positions (lat,long)
+* Change the positions with the new cities positions (lat, long)
 
 The algorithm will automatically work with the updated graph.
 
@@ -125,8 +161,8 @@ The algorithm will automatically work with the updated graph.
 
 This project implements:
 
-* **Dijkstra’s algorithm** for computing shortest paths
-* **Yen’s algorithm** for computing k shortest simple paths
+* **Dijkstra's algorithm** for computing shortest paths
+* **Yen's algorithm** for computing k shortest simple paths
 
 These algorithms ensure correct and efficient route computation.
 
